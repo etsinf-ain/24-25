@@ -2,7 +2,8 @@
     
 +!get(beer) : true
     <- 
-    .send(robot, achieve, has(owner,beer)).
+    .print("asking for a beer");
+    .send("robot@localhost", achieve, has("owner", "beer")).
 
 +has(owner,beer) : true
     <- 
