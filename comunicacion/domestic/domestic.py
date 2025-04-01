@@ -18,24 +18,26 @@ class RobotAgent(BDIAgent):
         @actions.add(".open", 1)
         def _m_open(agent, term, intention):
             print("[robot] opening fridge")
-            self.updated = False
             self.bdi.set_belief("stock", self.N)
             self.bdi.print_beliefs()
             yield
         
         @actions.add(".get", 1)
         def _m_get(agent, term, intention):
+            # updates stock and stock belief
+            if self.N == 0:
+                print("[robot] no beer left")
+                yield
+            self.bdi.remove_belief("stock", self.N)
             self.N -= 1
-            self.updated = True
+            self.bdi.set_belief("stock", self.N)
             print("[robot] getting a beer", str(self.N),"left")
             yield
 
         @actions.add(".close", 1)
         def _m_close(agent, term, intention):
             print("[robot] closing fridge")
-            old_stock = self.N + 1 if self.updated else 0 
-            self.bdi.remove_belief("stock", old_stock)
-            #time.sleep(1)
+            self.bdi.remove_belief("stock", self.N)
             self.bdi.print_beliefs()
             yield
 
@@ -50,9 +52,9 @@ class RobotAgent(BDIAgent):
             args = agentspeak.grounded(term.args, intention.scope)
             print("[robot] moving towards", args[0])
             #remove current position belief
-            current_pos = self.bdi.get_belief("at")
-            if current_pos != None:
-                self.bdi.remove_belief("at","robot",current_pos)
+            #current_pos = self.bdi.get_belief_value("at")
+            #if current_pos != None:
+            #    self.bdi.remove_belief("at")
             self.bdi.set_belief("at", "robot", args[0])
             self.bdi.print_beliefs()
             yield

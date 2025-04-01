@@ -1,12 +1,12 @@
 available(beer,fridge).
 limit(beer,4).
 
-too_much(B) :-
+too_much(beer) :-
        .date(YY,MM,DD) &
        // el subrayado indica que no me interesa
        // el valor de esa variable
-       .count(consumed(YY,MM,DD,_,_,_,B),QtdB) &
-       limit(B,Limit) &
+       .count(consumed(YY,MM,DD,_,_,_,beer),QtdB) &
+       limit(beer,Limit) &
        QtdB > Limit.
 
 
@@ -18,7 +18,7 @@ too_much(B) :-
        .open(fridge);
        .get(B);
        .close(fridge);
-       !at(robot,O);
+       !at(robot,owner);
        .hand_in(B);
        // remember that another beer will be consumed
        .date(YY,MM,DD); .time(HH,NN,SS);
@@ -41,22 +41,18 @@ too_much(beer) //& limit(beer,L)
           " beers a day! I am very sorry about that!",M);
     .send("owner@localhost",tell,msg(M)).
 
-+stock(B,0) :
-   available(beer,fridge)
++stock(B,0) 
+   //: available(beer,fridge)
    <- 
    .print("NO MORE BEERS O_o");
    -available(beer,fridge).
 
 +stock(B,N) :
-   .print("there are",N,"beers") &
-   N > 0 //& not available(beer,fridge)
+   N > 0 & not available(beer,fridge)
    <- 
    .print("there are",N,"beers");
    +available(beer,fridge).
 
--stock(B,N)
-   <- 
-   .print("forgueting beer ammount", N).
 
 
 +delivered(B,Qtd,OrderId)[source(supermarket)] : true 
@@ -65,7 +61,7 @@ too_much(beer) //& limit(beer,L)
 
 +!at(R,P) : at(robot,P)
 <-
-   .print("already at", P).
+   .print("already at", P," Stop moving and continue").
 
 +!at(R,P) : not at(robot,P) 
 <- 
