@@ -1,5 +1,9 @@
- !get(beer).
+// Initial intention
+!get(beer).
     
+/* Set of plans */
+
+// get a beer
 +!get(beer) : true
     <- 
     .print("asking for a beer");
@@ -9,6 +13,12 @@
     <- 
     !drink(beer).
 
+-has(owner,beer) : true
+    <- 
+    !get(beer).
+
+
+// drink the beer
 +!drink(beer) : has(owner,beer) 
     <- 
     .sip(beer);
@@ -16,10 +26,8 @@
 
 +!drink(beer) : not has(owner,beer).
 
--has(owner,beer) : true
-    <- 
-    !get(beer).
 
+// print received messages
 +msg(M)[source(Ag)] : true
     <- 
     .print("Message from ",Ag,": ",M);

@@ -1,4 +1,8 @@
+/* Initial beliefs */
 last_order_id(0).
+
+
+/* Set of plans */
 
 +!order(Product,Qtd)[source(Ag)]
     <-
@@ -7,6 +11,8 @@ last_order_id(0).
     OrderId = N + 1;
     -+last_order_id(OrderId);
     .deliver(Product,Qtd);
-    //.concat(Ag,"@localhost",AgAddr);
-    .print("order received from", Ag);
-    .send(Ag, tell, delivered(Product,Qtd,OrderId)).
+    .send("robot@localhost", tell, delivered(Product,Qtd,OrderId)).
+
++say(M)[source(Ag)]
+    <-
+    .print("Message from ",Ag,": ",M).

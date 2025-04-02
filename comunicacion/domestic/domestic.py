@@ -19,7 +19,6 @@ class RobotAgent(BDIAgent):
         def _m_open(agent, term, intention):
             print("[robot] opening fridge")
             self.bdi.set_belief("stock", self.N)
-            self.bdi.print_beliefs()
             yield
         
         @actions.add(".get", 1)
@@ -27,18 +26,18 @@ class RobotAgent(BDIAgent):
             # updates stock and stock belief
             if self.N == 0:
                 print("[robot] no beer left")
+                self.bdi.set_belief("stock", "beer", 0)
                 yield
-            self.bdi.remove_belief("stock", self.N)
+            self.bdi.remove_belief("stock", "beer", self.N)
             self.N -= 1
-            self.bdi.set_belief("stock", self.N)
+            self.bdi.set_belief("stock", "beer", self.N)
             print("[robot] getting a beer", str(self.N),"left")
             yield
 
         @actions.add(".close", 1)
         def _m_close(agent, term, intention):
             print("[robot] closing fridge")
-            self.bdi.remove_belief("stock", self.N)
-            self.bdi.print_beliefs()
+            self.bdi.remove_belief("stock", "beer", self.N)
             yield
 
         @actions.add(".hand_in", 1)
@@ -56,7 +55,6 @@ class RobotAgent(BDIAgent):
             #if current_pos != None:
             #    self.bdi.remove_belief("at")
             self.bdi.set_belief("at", "robot", args[0])
-            self.bdi.print_beliefs()
             yield
 
 
@@ -66,9 +64,8 @@ class OwnerAgent(BDIAgent):
         @actions.add(".sip", 1)
         def _m_sip(agent, term, intention):
             print("[owner] sipping")
-            #time.sleep(0.2)
-            # un 10% de prob de acabar la cerveza en este trago
-            if random.random() < 0.1:
+            # un 25% de prob de acabar la cerveza en este trago
+            if random.random() < 0.25:
                 self.bdi.remove_belief("has","owner","beer")
             yield
 
@@ -82,6 +79,7 @@ class MarketAgent(BDIAgent):
             prod = args[0]
             qty = args[1]
             print("[market] delivering order",str(qty),prod)
+            print("[market] done")
             yield
 
 
@@ -93,13 +91,13 @@ async def main():
 
     # establece el stock inicial and owner
     robot.set_stock(3)
+    robot.bdi.set_belief("available","beer","fridge")
     robot.set_owner(owner)
     print("Start agents")
     await robot.start()
     await owner.start()
     await market.start()
-    print("done")
-    await asyncio.sleep(1)
+    await asyncio.sleep(3)
 
 
     print("Stop agents...")
