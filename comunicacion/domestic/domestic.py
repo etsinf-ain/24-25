@@ -94,9 +94,9 @@ async def main():
     robot.bdi.set_belief("available","beer","fridge")
     robot.set_owner(owner)
     print("Start agents")
+    await market.start()
     await robot.start()
     await owner.start()
-    await market.start()
     await asyncio.sleep(3)
 
 

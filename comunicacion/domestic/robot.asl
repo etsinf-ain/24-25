@@ -29,8 +29,7 @@ too_much(beer) :-
 not available(beer,fridge)
 <- 
    .print(O,"has no beers, sending order");
-   .send("market@localhost", tell, say("hello"));
-   .send("market@localhost", achieve, order(beer,5));
+   .send("market@localhost", achieve, order("beer",5));
    // go to fridge and wait there.
    !at(robot,fridge).
 
