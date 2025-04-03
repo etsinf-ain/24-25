@@ -9,12 +9,14 @@ from spade_bdi.bdi import BDIAgent
 class RobotAgent(BDIAgent):
     def set_stock(self, N):
         self.N = N
-    
+        print("initial stor set")
+   
     def set_owner(self, owner):
         self.owner = owner
+        print("owner set")
 
     def add_custom_actions(self, actions):
-        # abre la nevera y hace percibir el stock
+        # open fridge and perceive stock
         @actions.add(".open", 1)
         def _m_open(agent, term, intention):
             print("[robot] opening fridge")
@@ -24,14 +26,14 @@ class RobotAgent(BDIAgent):
         @actions.add(".get", 1)
         def _m_get(agent, term, intention):
             # updates stock and stock belief
+            # self.bdi.remove_belief("stock", "beer", self.N)
             if self.N == 0:
                 print("[robot] no beer left")
                 self.bdi.set_belief("stock", "beer", 0)
                 yield
-            self.bdi.remove_belief("stock", "beer", self.N)
             self.N -= 1
-            self.bdi.set_belief("stock", "beer", self.N)
             print("[robot] getting a beer", str(self.N),"left")
+            self.bdi.set_belief("stock", "beer", self.N)
             yield
 
         @actions.add(".close", 1)
@@ -60,7 +62,6 @@ class RobotAgent(BDIAgent):
 
 class OwnerAgent(BDIAgent):
     def add_custom_actions(self, actions):
-         # abre la nevera y hace percibir el stock
         @actions.add(".sip", 1)
         def _m_sip(agent, term, intention):
             print("[owner] sipping")
@@ -72,7 +73,6 @@ class OwnerAgent(BDIAgent):
 
 class MarketAgent(BDIAgent):
     def add_custom_actions(self, actions):
-         # abre la nevera y hace percibir el stock
         @actions.add(".deliver", 2)
         def _m_deliver(agent, term, intention):
             args = agentspeak.grounded(term.args, intention.scope)
@@ -84,16 +84,18 @@ class MarketAgent(BDIAgent):
 
 
 async def main():
+    print("empiezo yo")
     robot = RobotAgent("robot@localhost", "1234", "robot.asl")
     owner = OwnerAgent("owner@localhost", "1234", "owner.asl")
     market = MarketAgent("market@localhost", "1234", "supermarket.asl")
 
-
+    print("set robot")
     # establece el stock inicial and owner
     robot.set_stock(3)
-    robot.bdi.set_belief("available","beer","fridge")
     robot.set_owner(owner)
-    print("Start agents")
+    print("Start agents?")
+    '''
+    res = input()
     await market.start()
     await robot.start()
     await owner.start()
@@ -110,6 +112,7 @@ async def main():
     await robot.stop()
     await owner.stop()
     await market.stop()
+    '''
     print("Agents stopped")
 
 
