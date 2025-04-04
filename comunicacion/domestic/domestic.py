@@ -9,6 +9,10 @@ from spade_bdi.bdi import BDIAgent
 class RobotAgent(BDIAgent):
     def set_stock(self, N):
         self.N = N
+        self.bdi.set_belief('available','beer','fridge')
+        print("Drink lilmit>")
+        limit = input()
+        self.bdi.set_belief("limit","beer",limit)
         print("initial stor set")
    
     def set_owner(self, owner):
@@ -84,21 +88,18 @@ class MarketAgent(BDIAgent):
 
 
 async def main():
-    print("empiezo yo")
     robot = RobotAgent("robot@localhost", "1234", "robot.asl")
     owner = OwnerAgent("owner@localhost", "1234", "owner.asl")
     market = MarketAgent("market@localhost", "1234", "supermarket.asl")
 
-    print("set robot")
+    print("setting robot")
     # establece el stock inicial and owner
     robot.set_stock(3)
     robot.set_owner(owner)
-    print("Start agents?")
-    '''
-    res = input()
+    print("Start agents")
     await market.start()
-    await robot.start()
     await owner.start()
+    await robot.start()
     await asyncio.sleep(3)
 
 
@@ -112,7 +113,6 @@ async def main():
     await robot.stop()
     await owner.stop()
     await market.stop()
-    '''
     print("Agents stopped")
 
 

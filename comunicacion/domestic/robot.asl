@@ -1,9 +1,9 @@
 /* Initial beliefs and rules */
 // initially, robot believes that there is some beer in the fridge
-available(beer,fridge).
+//available(beer,fridge).
 
 // the owner should not consume more than 4 beers a day :-)
-limit(beer,4).
+//limit(beer,4).
 
 too_much(beer) :-
        .date(YY,MM,DD) &
@@ -30,7 +30,7 @@ too_much(beer) :-
        +consumed(YY,MM,DD,HH,NN,SS,B).
 
 +!has(Ow, B) :
-not available(beer,fridge) & not too_much(beer)
+not available(beer,fridge)
 <- 
    .print(Ow,"has no beers, sending order");
    .send("market@localhost", achieve, order("beer",5));
