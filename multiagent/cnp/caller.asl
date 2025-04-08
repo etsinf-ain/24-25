@@ -21,25 +21,26 @@ all_proposals_received(CNPId) :-
       .findall(Name,introduction(Role,Name),LP);
       .print("Sending CFP to ",LP);
       .send(LP,tell,cfp(Id,Task));
-      .concat("+!contract(",Id,")",Event).
+      .concat("+!contract('",Id,"')",Event);
       // the deadline of the CNP is now + 4 seconds, so
       // the event +!contract(Id) is generated at that time
-      //.at("now +4 seconds", Event).
-/*
+      .at(4, Event).
+
+
 // receive proposal 
 // if all proposal have been received, don't wait for the deadline
-@r1 +propose(CNPId,Offer)
++propose(CNPId,Offer)
    :  cnp_state(CNPId,propose) & all_proposals_received(CNPId)
    <- !contract(CNPId).
 
 // receive refusals   
-@r2 +refuse(CNPId) 
++refuse(CNPId) 
    :  cnp_state(CNPId,propose) & all_proposals_received(CNPId)
    <- !contract(CNPId).
 
 // this plan needs to be atomic so as not to accept
 // proposals or refusals while contracting
-@lc1[atomic]
+//@lc1[atomic]
 +!contract(CNPId)
    :  cnp_state(CNPId,propose)
    <- -+cnp_state(CNPId,contract);
@@ -52,7 +53,7 @@ all_proposals_received(CNPId) :-
       -+cnp_state(Id,finished).
 
 // nothing todo, the current phase is not 'propose'
-@lc2 +!contract(CNPId).
++!contract(CNPId).
 
 -!contract(CNPId)
    <- .print("CNP ",CNPId," has failed!").
@@ -66,4 +67,3 @@ all_proposals_received(CNPId) :-
 +!announce_result(CNPId,[offer(O,LAg)|T],WAg) 
    <- .send(LAg,tell,reject_proposal(CNPId));
       !announce_result(CNPId,T,WAg).
-*/
