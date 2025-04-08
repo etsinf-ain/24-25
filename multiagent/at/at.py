@@ -16,19 +16,43 @@ class TimedAgent(BDIAgent):
        # el constructor recibe el evento y el instante de tiempo 
         def __init__(self, start_at, event):
             super().__init__(start_at)
+            print("complete", event)
+            self.add = True if event[0] == '+' else False
+            event = event[1:]
+            print("event", event)
+            if event[0] == '!':
+                self.is_intent = True
+                event = event[1:]
+            else:
+                self.is_intent = False
             self.event = event
+            print("final", event, "intention",self.is_intent,"add",self.add)
         
+        def ilf_type(self):
+            if self.add:
+                if self.is_intent:
+                    return "achieve"
+                else:
+                    return "tell"
+            else:
+                if self.is_intent:
+                    return "unachieve"
+                else:
+                    return "untell"
+
         async def run(self):
             print(f"TimeoutSenderBehaviour running at {datetime.datetime.now().time()}")
-            print(f"event: +{self.event}")
-            # crea un mensaje para añadir una creencia (tell)
+            print(f"event: {self.event}")
+            # crea un mensaje para añadir una creencia
+            ilf = self.ilf_type()
             mdata = {
                     "performative": "BDI",
-                    "ilf_type": "tell",
+                    "ilf_type": ilf,
             }
             msg = Message(to=str(self.agent.jid), 
                           body=str(self.event), 
                           metadata=mdata)
+            print("msg:", msg)
             # envia un mensaje tell -> genera una creencia    
             self.agent.submit(self.send(msg))
 
