@@ -43,6 +43,7 @@ class TimedAgent(BDIAgent):
             msg = Message(to=str(self.agent.jid), 
                           body=str(self.event), 
                           metadata=mdata)
+            print("[caller] activate contract: ", str(self.event))
             self.agent.submit(self.send(msg))
 
 
@@ -62,23 +63,22 @@ async def main():
     # list of agents
     # 1 caller, 3 participants, 1 rejecting proposal, 1 not answering
     present = BDIAgent("present@localhost", "1234", "present.asl")
-    #part1 = BDIAgent("part1@localhost", "1234", "participant.asl")
-    #part2 = BDIAgent("part2@localhost", "1234", "participant.asl")
-    #part3 = BDIAgent("part3@localhost", "1234", "participant.asl")
+    part1 = BDIAgent("part1@localhost", "1234", "participant.asl")
+    part2 = BDIAgent("part2@localhost", "1234", "participant.asl")
+    part3 = BDIAgent("part3@localhost", "1234", "participant.asl")
     reject = BDIAgent("reject@localhost", "1234", "reject.asl")
     caller = TimedAgent("caller@localhost", "1234", "caller.asl")
     
 
     print("Start agents")
-    #await part1.start()
-    #await part2.start()
-    #await part3.start()
     await caller.start()
+    await part1.start()
     await present.start()   
     await reject.start()
-        
+    await part2.start()
+    await part3.start()
 
-    await asyncio.sleep(10)
+    await asyncio.sleep(30)
     print("Finished. Stop agents")
     print("** caller beliefs")
     caller.bdi.print_beliefs()
@@ -86,12 +86,16 @@ async def main():
     present.bdi.print_beliefs()
     print("** reject beliefs")
     reject.bdi.print_beliefs()
-    await caller.stop()
-    #await part1.stop()
-    #await part2.stop()
-    #await part3.stop()
+    print("** participant 1 beliefs")
+    part1.bdi.print_beliefs()
+    await part1.stop()
+    await part2.stop()
+    await part3.stop()
     await reject.stop()
     await present.stop()
+    await caller.stop()
+    print("Agents stopped")
+
 
 
 if __name__ == "__main__":
