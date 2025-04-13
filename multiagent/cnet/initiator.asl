@@ -10,7 +10,7 @@ all_proposals_received(CNPId) :-
 
 /* Initial goals */
 // id and task to be solved
-!startCNP(1,"fix_computer").
+!startCNP(1,"@fix_computer"). // CNPId, Task
 
 /* Plans */
 
@@ -59,3 +59,4 @@ all_proposals_received(CNPId) :-
 +!announce_result(CNPId,[offer(O,LAg)|T],WAg) 
    <- .send(LAg,tell,reject(CNPId));
       !announce_result(CNPId,T,WAg).
+

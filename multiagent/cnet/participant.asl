@@ -31,14 +31,24 @@ price(Service,X) :- .random(R) & X = (10*R)+100.
       .send(A,tell,propose(CNPId,Offer)).
       
 // proposal accepted -> do the task
-+accept(CNPId)
++accept(CNPId)[source(A)]
    :  proposal(CNPId,Task,Offer)
    <- .print("My proposal '",Offer,"' won CNP",CNPId,
-             "for ",Task).
+             "for ",Task);
       // do the task and report to initiator
+      !fix(computer);
+      .send(A,tell,inform(CNPId,"done")).
 	       
 // proposal refused -> do nothing and remove proposal
 +reject(CNPId)
    <- .print("I lost CNP",CNPId);
       -proposal(CNPId,_,_). // remove the proposal's belief
 	  
+
+// task to execute
+@fix_computer
++!fix(Object)
+   <- .print("Fixing", Object);
+      // do the task and report to initiator
+      .wait(1000); // wait 1 sec for the task to be done
+      .print(Object, "fixed").
