@@ -54,7 +54,6 @@
 // pos (object,X,Y)
 pos(builder,15,15).
 
-
 /*
    Plans
 
@@ -65,7 +64,8 @@ pos(builder,15,15).
 // Cuando el builder pide un recurso, lo anota para detectar cuándo lo encuentra
 // Eso debe disparar el plan de búsqueda del recurso
 +!search_for(NewResource) 
-   <- +resource_needed(NewResource).
+   <- 
+   +resource_needed(NewResource).
 
 // Cuando se recibe el mensaje de que se ha completado la construciçón
 // el agente vuelve a la celda del builder (hay que crear un plan para eso)

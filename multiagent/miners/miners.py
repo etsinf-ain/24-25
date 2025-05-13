@@ -40,20 +40,17 @@ class MinerAgent(BDIAgent):
 
 async def main():
     # list of agents
-    # 1 initiator, 3 participants, 1 rejecting proposal
     agents = []
-    agents.append(BuilderAgent("builder@localhost", "1234", "builder.asl"))
     agents.append(MinerAgent("miner1@localhost", "1234", "miner.asl"))
     agents.append(MinerAgent("miner2@localhost", "1234", "miner.asl"))
     agents.append(MinerAgent("miner3@localhost", "1234", "miner.asl"))
+    # builder debe ser el último en iniciar
+    agents.append(BuilderAgent("builder@localhost", "1234", "builder.asl"))
+
 
     print("Start agents")
     for agent in agents:
         await agent.start()
-    builder = agents[0]
-    # asi podemos añadir al builder la lista de mineros
-    # builder.bdi.set_belief("miner",agents[1:])
-
     await asyncio.sleep(5)
     print("Finished. Stop agents")
     for agent in agents:

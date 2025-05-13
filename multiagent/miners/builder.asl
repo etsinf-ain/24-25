@@ -41,9 +41,11 @@
 
 // lista con los agentes mineros (para enviarles mensajes)
 // Alternativa: crearla desde el código python
+/*
 miners(["miner1@localhost",
         "miner2@localhost",
         "miner3@localhost"]).
+*/
 // Tipo de recurso que necesita para construir
 // Empieza con el recurso 1 -> dispara la ejecución del agente
 resource_needed(1).
@@ -65,7 +67,11 @@ resource_needed(1).
       .print("Builder: I need resource ",R);
       ?miners(M);
       .print("Asking miners", M);
-      .send(M,achieve, search_for(R)).
+      //.send(M,achieve, search_for(R));
+      .send("miner1@localhost",achieve, search_for(R));
+      .send("miner2@localhost",achieve, search_for(R));
+      .send("miner3@localhost",achieve, search_for(R)).
+
 
 // Cuando se recibe un recurso y es el que es necesita,
 // se utiliza para construir
