@@ -21,9 +21,12 @@ class DistAgent(BDIAgent):
 async def main():
     # list of agents
     dist = DistAgent("dist@localhost", "1234", "distance.asl")
+    master = BDIAgent("master@localhost", "1234", "master.asl")
+    await master.start()
     await dist.start()
     await asyncio.sleep(1)
     await dist.stop()
+    await master.stop()
 
 if __name__ == "__main__":
     spade.run(main())
